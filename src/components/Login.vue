@@ -14,6 +14,9 @@
               <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.password"></el-input>
             </el-form-item>
             <el-form-item>
+              <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.mail_address"></el-input>
+            </el-form-item>
+            <el-form-item>
               <el-row>
                 <el-col :span="24">
                   <el-button style="width:100%" type="primary" @click="onSubmit">登录</el-button>
@@ -39,22 +42,40 @@ export default {
     return {
       form: {
         name: "",
-        password: ""
+        password: "",
+        mail_address:""
       }
     };
   },
   methods: {
     onSubmit() {
+      var vm = this;
       console.log("调用");
       this.$http({
-        method:"get",
-        url:"/api/web/login",
+        method:"post",
+        url:"/api/web/register",
         data:{
-          name:"xq",
-          password:"xqxqxqxq"
+          name:this.form.name,
+          password:this.form.password,
+          mail_address:this.form.mail_address
         }
       }).then(function(res){
         console.log(res);
+        if(res.data.status == 1){
+          console.log("注册成功，给您自动跳转至首页面");
+          vm.$message({
+             message: '居中的文字',
+              center: true
+          })
+          vm.$router.push({
+            path: '/index',
+          })
+        }else{
+          vm.$message({
+             message: '登录失败',
+              center: true
+          })
+        }
       }).catch(function(err){
         console.log(err);
       })

@@ -5,7 +5,7 @@ import router from './router'
 
 import axios from 'axios'
 Vue.prototype.$http = axios;
-axios.defaults.baseURL = 'http://192.144.239.176:8080'
+
 
 //引入自定义全局样式
 import './assets/global.css';
