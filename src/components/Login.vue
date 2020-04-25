@@ -14,12 +14,9 @@
               <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.password"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.mail_address"></el-input>
-            </el-form-item>
-            <el-form-item>
               <el-row>
                 <el-col :span="24">
-                  <el-button style="width:100%" type="primary" @click="onSubmit">登录</el-button>
+                  <el-button style="width:100%" type="primary" @click="onSubmit" v-loading.fullscreen.lock="fullscreenLoading">登录</el-button>
                 </el-col>
               </el-row>
               <el-row  style="margin-top:10px">
@@ -40,49 +37,59 @@
 export default {
   data() {
     return {
+      fullscreenLoading:false,
       form: {
         name: "",
-        password: "",
-        mail_address:""
+        password: ""
       }
     };
   },
   methods: {
     onSubmit() {
       var vm = this;
-      console.log("调用");
+      vm.fullscreenLoading = true;
+
       this.$http({
         method:"post",
-        url:"/api/web/register",
+        url:"/api/web/login",
         data:{
-          name:this.form.name,
-          password:this.form.password,
-          mail_address:this.form.mail_address
+          name:vm.form.name,
+          password:vm.form.password
         }
       }).then(function(res){
-        console.log(res);
+        vm.fullscreenLoading = false;
         if(res.data.status == 1){
-          console.log("注册成功，给您自动跳转至首页面");
+          //设置登录状态
+          vm.$store.commit("setLoginStatu",true);
+
           vm.$message({
-             message: '居中的文字',
-              center: true
+            message: res.data.data.msg,
+            center: true
           })
-          vm.$router.push({
-            path: '/index',
+          vm.$router.replace({
+            path: '/index'
           })
         }else{
           vm.$message({
-             message: '登录失败',
-              center: true
+            message: res.data.error_des,
+            center: true
           })
         }
-      }).catch(function(err){
+      })
+      .catch(function(err){
+        vm.fullscreenLoading = false;
         console.log(err);
       })
     },
     reset() {
       this.form.name = "";
       this.form.password = "";
+      this.$http({
+        url:"/api/web/logout",
+        method:"get"
+      })
+      .then(function(res){console.log(res)})
+      .catch(function(err){console.log(err)})
     }
   }
 };

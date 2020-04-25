@@ -1,16 +1,31 @@
 import Vue from 'vue'
 import App from './App.vue'
+
+//引入router
 import router from './router'
-
-
-import axios from 'axios'
-Vue.prototype.$http = axios;
-
 
 //引入自定义全局样式
 import './assets/global.css';
 
-Vue.config.productionTip = false
+//引入axios
+import axios from 'axios'
+Vue.prototype.$http = axios;
+//生产环境即打包时添加将添加下面一行
+//Vue.$http.baseUrl = "http://192.144.239.176:8080"
+
+//引入Vuex
+import store from './store'
+
+
+
+
+
+
+
+
+
+
+
 
 //引入ElementUI
 import ElementUI from 'element-ui';
@@ -180,7 +195,12 @@ Vue.prototype.$prompt = MessageBox.prompt;
 Vue.prototype.$notify = Notification;
 Vue.prototype.$message = Message;
 
+//不知道是干嘛的
+Vue.config.productionTip = false
+
+//创建Vue实例，并将其挂载至#app
 new Vue({
   router,
+  store,
   render: h => h(App)
 }).$mount('#app')

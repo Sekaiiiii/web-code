@@ -3,10 +3,8 @@ import Vue from 'vue'
 import Index from '../components/Index.vue'
 import Login from '../components/Login.vue'
 import PageNotFound from "../components/PageNotFound"
-import Test1 from "../components/Test1.vue"
-import Test2 from "../components/Test2.vue"
-import Test3 from "../components/Test3.vue"
 
+import New from "../components/New.vue"
 
 import VueRouter from 'vue-router'
 
@@ -29,16 +27,8 @@ const routes = [
     component : Index,
     children:[
       {
-        path:"1",
-        component:Test1
-      },
-      {
-        path:"2",
-        component:Test2
-      },
-      {
-        path:"3",
-        component:Test3
+        path:"new",
+        component:New
       }
     ]
   },
