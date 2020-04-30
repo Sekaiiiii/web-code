@@ -4,14 +4,12 @@
       <el-header></el-header>
       <el-main>
         <div class="login-form-box">
-          <h1>博物馆应用系统</h1>
-          <h1>后台管理子系统</h1>
           <el-form>
             <el-form-item>
               <el-input prefix-icon="el-icon-user" placeholder="请输入用户名" v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.password"></el-input>
+              <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.password" type="password"></el-input>
             </el-form-item>
             <el-form-item>
               <el-row>
@@ -49,19 +47,20 @@ export default {
       var vm = this;
       vm.fullscreenLoading = true;
 
-      this.$http({
+      vm.$http({
         method:"post",
         url:"/api/web/login",
         data:{
           name:vm.form.name,
           password:vm.form.password
         }
-      }).then(function(res){
+      })
+      .then(function(res){
+        console.log(res);
         vm.fullscreenLoading = false;
         if(res.data.status == 1){
           //设置登录状态
           vm.$store.commit("setLoginStatu",true);
-
           vm.$message({
             message: res.data.data.msg,
             center: true
@@ -111,9 +110,12 @@ h1 {
 }
 
 .login-form-box {
-  height:40%;
-  width: 20%;
-  padding: 10px;
+  height:240px;
+  width: 400px;
+  padding-top:30px;
+  padding-bottom: 15px;
+  padding-right:15px;
+  padding-left: 15px;
 
   position: absolute;
   margin: auto;
@@ -124,5 +126,9 @@ h1 {
 
   border-radius: 10%;
   background-image: url("../assets/login-form-background-image.jpg");
+}
+
+.el-input {
+  width:400px
 }
 </style>

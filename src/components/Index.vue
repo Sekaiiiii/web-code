@@ -1,11 +1,11 @@
 <template>
   <div class="index-component">
     <el-container>
-      <el-header height="100px">
+      <el-header height="50px">
         <!-- 这里面放标题 用户按钮 -->
       </el-header>
       <el-container>
-        <el-aside width="300px">
+        <el-aside>
           <!-- 这里面放menu -->
           <div class="el-menu-box">
             <el-menu
@@ -17,28 +17,34 @@
               active-text-color="#ffd04b"
               :router="true"
             >
-              <el-submenu index="index">
+              <el-menu-item index="/index">
+                <i class="el-icon-setting"></i>
+                <span slot="title">首页</span>
+              </el-menu-item>
+
+              <el-submenu index="/index">
                 <template slot="title">
                   <i class="el-icon-location"></i>
-                  <span>新闻管理</span>
+                  <span slot="title">数据管理</span>
                 </template>
-                <el-menu-item-group>
-                  <template slot="title">分组一</template>
-                  <el-menu-item index="1-1"></el-menu-item>
-                  <el-menu-item index="1-2">选项2</el-menu-item>
-                </el-menu-item-group>
-                <el-menu-item-group title="分组2">
-                  <el-menu-item index="1-3">选项3</el-menu-item>
-                </el-menu-item-group>
-                <el-submenu index="1-4">
-                  <template slot="title">选项4</template>
-                  <el-menu-item index="1-4-1">选项1</el-menu-item>
-                </el-submenu>
+                <el-menu-item index="/index/museum">博物馆信息</el-menu-item>
+                <el-menu-item index="/index/exhibition">展览信息</el-menu-item>
+                <el-menu-item index="/index/education_activity">教育活动信息</el-menu-item>
+                <el-menu-item index="/index/collection">藏品信息</el-menu-item>
+                <el-menu-item index="/index/new">新闻信息</el-menu-item>
+                <el-menu-item index="/index/explain">讲解信息</el-menu-item>
               </el-submenu>
-
-              <el-menu-item index="/index/new">
+              <el-menu-item index="/index/user">
                 <i class="el-icon-menu"></i>
-                <span slot="title">新闻管理</span>
+                <span slot="title">用户管理</span>
+              </el-menu-item>
+              <el-menu-item index="/index/admin">
+                <i class="el-icon-menu"></i>
+                <span slot="title">管理员管理</span>
+              </el-menu-item>
+              <el-menu-item index="/index/audit">
+                <i class="el-icon-menu"></i>
+                <span slot="title">讲解审核</span>
               </el-menu-item>
 
               <el-menu-item @click="logout" v-loading.fullscreen.lock="fullscreenLoading">
@@ -110,28 +116,23 @@ export default {
         });
     }
   },
-  beforeCreate(){
+  beforeCreate() {
     var vm = this;
     //检查登录状态
-    if(!vm.$store.state.is_login){
+    if (!vm.$store.state.is_login) {
       vm.$message({
-        message:"用户未登录,请先登录",
-        center:true
-      })
+        message: "用户未登录,请先登录",
+        center: true
+      });
       vm.$router.replace({
-        path:"/login"
-      })
-    }else{
+        path: "/login"
+      });
+    } else {
       document.title = "博物馆后台管理系统";
     }
   },
-  created(){
-
-  },
-  mounted(){
-
-  },
-
+  created() {},
+  mounted() {}
 };
 </script>
 
@@ -153,6 +154,7 @@ export default {
 .el-main {
   background-color: aqua;
   width: 100%;
+  padding: 0px;
 }
 .el-menu-box {
   height: 100%;
