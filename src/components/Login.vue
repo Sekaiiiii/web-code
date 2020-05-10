@@ -9,15 +9,25 @@
               <el-input prefix-icon="el-icon-user" placeholder="请输入用户名" v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item>
-              <el-input prefix-icon="el-icon-user" placeholder="请输入密码" v-model="form.password" type="password"></el-input>
+              <el-input
+                prefix-icon="el-icon-user"
+                placeholder="请输入密码"
+                v-model="form.password"
+                type="password"
+              ></el-input>
             </el-form-item>
             <el-form-item>
               <el-row>
                 <el-col :span="24">
-                  <el-button style="width:100%" type="primary" @click="onSubmit" v-loading.fullscreen.lock="fullscreenLoading">登录</el-button>
+                  <el-button
+                    style="width:100%"
+                    type="primary"
+                    @click="onSubmit"
+                    v-loading.fullscreen.lock="fullscreenLoading"
+                  >登录</el-button>
                 </el-col>
               </el-row>
-              <el-row  style="margin-top:10px">
+              <el-row style="margin-top:10px">
                 <el-col :span="24">
                   <el-button style="width:100%" type="info" @click="reset">重置</el-button>
                 </el-col>
@@ -35,7 +45,7 @@
 export default {
   data() {
     return {
-      fullscreenLoading:false,
+      fullscreenLoading: false,
       form: {
         name: "",
         password: ""
@@ -48,47 +58,58 @@ export default {
       vm.fullscreenLoading = true;
 
       vm.$http({
-        method:"post",
-        url:"/api/web/login",
-        data:{
-          name:vm.form.name,
-          password:vm.form.password
+        method: "post",
+        url: "/api/web/login",
+        data: {
+          name: vm.form.name,
+          password: vm.form.password
         }
       })
-      .then(function(res){
-        console.log(res);
-        vm.fullscreenLoading = false;
-        if(res.data.status == 1){
-          //设置登录状态
-          vm.$store.commit("setLoginStatu",true);
+        .then(function(res) {
+          vm.fullscreenLoading = false;
+          if (res.data.status == 1) {
+            //设置登录状态
+            vm.$store.commit("setLoginStatu", true);
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.$router.replace({
+              path: "/index"
+            });
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(function(err) {
+          vm.fullscreenLoading = false;
+          console.log(err);
           vm.$message({
-            message: res.data.data.msg,
+            message: "请求失败，请重试",
             center: true
-          })
-          vm.$router.replace({
-            path: '/index'
-          })
-        }else{
-          vm.$message({
-            message: res.data.error_des,
-            center: true
-          })
-        }
-      })
-      .catch(function(err){
-        vm.fullscreenLoading = false;
-        console.log(err);
-      })
+          });
+        });
     },
     reset() {
+      let vm = this;
       this.form.name = "";
       this.form.password = "";
       this.$http({
-        url:"/api/web/logout",
-        method:"get"
+        url: "/api/web/logout",
+        method: "get"
       })
-      .then(function(res){console.log(res)})
-      .catch(function(err){console.log(err)})
+        .then(function() {
+          vm.$message({
+            message:"退出登录成功",
+            center:true
+          })
+        })
+        .catch(function(err) {
+          console.log(err);
+        });
     }
   }
 };
@@ -110,11 +131,11 @@ h1 {
 }
 
 .login-form-box {
-  height:240px;
+  height: 240px;
   width: 400px;
-  padding-top:30px;
+  padding-top: 30px;
   padding-bottom: 15px;
-  padding-right:15px;
+  padding-right: 15px;
   padding-left: 15px;
 
   position: absolute;
@@ -129,6 +150,6 @@ h1 {
 }
 
 .el-input {
-  width:400px
+  width: 400px;
 }
 </style>

@@ -10,8 +10,8 @@
           <div class="el-menu-box">
             <el-menu
               default-active="1"
-              @open="handleOpen"
-              @close="handleClose"
+              @open="no_use"
+              @close="no_use"
               background-color="#545c64"
               text-color="#fff"
               active-text-color="#ffd04b"
@@ -33,6 +33,7 @@
                 <el-menu-item index="/index/collection">藏品信息</el-menu-item>
                 <el-menu-item index="/index/new">新闻信息</el-menu-item>
                 <el-menu-item index="/index/explain">讲解信息</el-menu-item>
+                <el-menu-item index="/index/comment">评论信息</el-menu-item>
               </el-submenu>
               <el-menu-item index="/index/user">
                 <i class="el-icon-menu"></i>
@@ -71,12 +72,6 @@ export default {
     };
   },
   methods: {
-    handleOpen(key, keyPath) {
-      console.log(key, keyPath);
-    },
-    handleClose(key, keyPath) {
-      console.log(key, keyPath);
-    },
     logout() {
       var vm = this;
       vm.fullscreenLoading = true;
@@ -114,7 +109,8 @@ export default {
             center: true
           });
         });
-    }
+    },
+    no_use() {}
   },
   beforeCreate() {
     var vm = this;
@@ -152,7 +148,7 @@ export default {
   background-color: gray;
 }
 .el-main {
-  background-color: aqua;
+  background-color: white;
   width: 100%;
   padding: 0px;
 }
@@ -162,5 +158,6 @@ export default {
 .el-menu {
   width: 100%;
   height: 100%;
+  border: 0px;
 }
 </style>

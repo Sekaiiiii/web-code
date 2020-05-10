@@ -47,7 +47,8 @@ const routes = [{
       },
       {
         path: 'museum',
-        component: Museum
+        component: Museum,
+        
       },
       {
         path: 'exhibition',
@@ -71,7 +72,8 @@ const routes = [{
       },
       {
         path: 'comment',
-        component: Comment
+        component: Comment,
+       
       },
       {
         path: 'database',

@@ -9,7 +9,7 @@ import './assets/global.css';
 
 //引入axios
 import axios from 'axios'
-axios.defaults.timeout = 6000;
+axios.defaults.timeout = 20000;
 //生产环境即打包时注意切换
 //axios.defaults.baseURL = "http://192.144.239.176:8080"
 //axios.defaults.baseURL = "http://localhost:8080"
