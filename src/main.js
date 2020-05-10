@@ -9,23 +9,18 @@ import './assets/global.css';
 
 //引入axios
 import axios from 'axios'
+axios.defaults.timeout = 6000;
+//生产环境即打包时注意切换
+//axios.defaults.baseURL = "http://192.144.239.176:8080"
+//axios.defaults.baseURL = "http://localhost:8080"
 Vue.prototype.$http = axios;
-//生产环境即打包时添加将添加下面一行
-//Vue.$http.baseUrl = "http://192.144.239.176:8080"
+
+//引入qs
+import qs from 'qs'
+Vue.prototype.$qs = qs;
 
 //引入Vuex
 import store from './store'
-
-
-
-
-
-
-
-
-
-
-
 
 //引入ElementUI
 import ElementUI from 'element-ui';
