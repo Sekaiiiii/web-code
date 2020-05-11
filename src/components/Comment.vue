@@ -4,10 +4,9 @@
       <el-header>
         <div class="form-line-box">
           <el-form :inline="true" :model="search_form">
-            <el-form-item v-if="from_museum" >
+            <el-form-item v-if="have_param">
               <el-button @click="goBack">返回上一页</el-button>
             </el-form-item>
-
             <el-form-item label="用户名">
               <el-input v-model="search_form.user_name"></el-input>
             </el-form-item>
@@ -75,7 +74,21 @@
         </el-table>
       </el-main>
 
-      <el-footer></el-footer>
+      <el-footer>
+        <div class="page-box">
+          <div class="block">
+            <el-pagination
+              @size-change="ppnChange"
+              @current-change="pageChange"
+              :current-page="search_form.page"
+              :page-sizes="[15,30,50,100,200,400,800]"
+              :page-size="search_form.ppn"
+              :total="comment_num"
+              layout="total, sizes, prev, pager, next, jumper"
+            ></el-pagination>
+          </div>
+        </div>
+      </el-footer>
     </el-container>
   </div>
 </template>
@@ -84,7 +97,7 @@
 export default {
   data() {
     return {
-      from_museum: false,
+      have_param: false,
       table_loading: false,
 
       museum_list: [],
@@ -194,17 +207,28 @@ export default {
           });
         });
     },
-    no_use() {},
     goBack() {
       this.$router.back();
-    }
+    },
+    ppnChange(ppn) {
+      let vm = this;
+      vm.search_form.ppn = ppn;
+      vm.search_form.page = 1;
+      vm.get_comment();
+    },
+    pageChange(page) {
+      let vm = this;
+      vm.search_form.page = page;
+      vm.get_comment();
+    },
+    no_use() {}
   },
 
   //生命周期函数
   created() {
     var vm = this;
     if (vm.$route.query.museum_id != undefined) {
-      vm.from_museum = true;
+      vm.have_param = true;
       vm.search_form.museum_id = vm.$route.query.museum_id;
     }
     vm.get_museum();
@@ -215,16 +239,14 @@ export default {
 </script>
 
 <style >
-.comment-component .form-line.box {
-  height: 100px;
+.comment-component .form-line-box {
+  text-align: center;
+  padding-top: 10px;
 }
-
-.form-line.box .el-form-item {
+.comment-component .form-line-box .el-form-item {
   padding: 10px;
 }
-
-.comment-component .el-page-header__title {
-  font-size: 20px;
-  line-height: 40px;
+.comment-component .page-box {
+  text-align: center;
 }
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <el-container class="new-component"  v-loading="table_loading">
+  <el-container class="new-component" v-loading="table_loading">
     <el-header>
       <div class="form-line-box">
         <el-form :inline="true" :model="search_form">
@@ -80,7 +80,6 @@
             :page-sizes="[15,30,50,100,200,400,800]"
             :page-size="search_form.ppn"
             :total="new_num"
-           
             layout="total, sizes, prev, pager, next, jumper"
           ></el-pagination>
         </div>
@@ -184,25 +183,25 @@ export default {
   margin: 0px;
 }
 
-.new-table {
+.new-component .new-table {
   height: 100%;
   width: 100%;
 }
 
-.form-line-box {
+.new-component .form-line-box {
   padding: 10px;
   text-align: center;
 }
 
-.form-line-box .el-form-item {
+.new-component .form-line-box .el-form-item {
   padding: 10px;
 }
 
-.page-box {
+.new-component .page-box {
   padding: 10px;
 }
 
-.el-pagination {
+.new-component .el-pagination {
   text-align: center;
 }
 </style>

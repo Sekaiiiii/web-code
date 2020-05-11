@@ -184,7 +184,11 @@ export default {
 </script>
 
 <style>
-.form-line.box .el-form-item {
+.museum-component .form-line-box {
+  text-align: center;
+  padding-top: 10px;
+}
+.museum-component .form-line-box .el-form-item {
   padding: 10px;
 }
 </style>
