@@ -75,7 +75,7 @@ export default {
               center: true
             });
             vm.$router.replace({
-              path: "/index"
+              path: "/index/main"
             });
           } else {
             vm.$message({
@@ -103,9 +103,9 @@ export default {
       })
         .then(function() {
           vm.$message({
-            message:"退出登录成功",
-            center:true
-          })
+            message: "退出登录成功",
+            center: true
+          });
         })
         .catch(function(err) {
           console.log(err);

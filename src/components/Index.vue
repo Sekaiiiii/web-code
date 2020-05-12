@@ -17,7 +17,7 @@
               active-text-color="#ffd04b"
               :router="true"
             >
-              <el-menu-item index="/index">
+              <el-menu-item index="/index/main">
                 <i class="el-icon-setting"></i>
                 <span slot="title">首页</span>
               </el-menu-item>
@@ -47,7 +47,10 @@
                 <i class="el-icon-menu"></i>
                 <span slot="title">讲解审核</span>
               </el-menu-item>
-
+              <el-menu-item index="/index/database">
+                <i class="el-icon-menu"></i>
+                <span slot="title">数据库备份与恢复</span>
+              </el-menu-item>
               <el-menu-item @click="logout" v-loading.fullscreen.lock="fullscreenLoading">
                 <i class="el-icon-setting"></i>
                 <span slot="title">退出登录</span>

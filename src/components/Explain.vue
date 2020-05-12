@@ -95,8 +95,8 @@
           <el-table-column label="审核状态" width="150" prop="is_illegal">
             <template slot-scope="scope">
               <span v-if="scope.row.is_illegal == 1">未审核</span>
-              <span v-if="scope.row.is_illegal == 2">审核通过</span>
-              <span v-if="scope.row.is_illegal == 0">审核不通过</span>
+              <span v-if="scope.row.is_illegal == 0">审核通过</span>
+              <span v-if="scope.row.is_illegal == 2">审核不通过</span>
             </template>
           </el-table-column>
           <el-table-column width="330">

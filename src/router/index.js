@@ -14,7 +14,7 @@ import New from "../components/New.vue"
 import Explain from "../components/Explain.vue"
 import Comment from "../components/Comment.vue"
 import Database from "../components/Database.vue"
-
+import Main from"../components/Main.vue"
 import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
@@ -33,7 +33,12 @@ const routes = [{
     path: '/index',
     name: 'index',
     component: Index,
-    children: [{
+    children: [
+      {
+        path:"main",
+        component:Main
+      },
+      {
         path: "user",
         component: User
       },
