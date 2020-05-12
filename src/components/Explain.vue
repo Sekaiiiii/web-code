@@ -1,5 +1,5 @@
 <template>
-  <div class="comment-component">
+  <div class="explain-component">
     <el-container v-loading="table_loading">
       <el-header>
         <div class="form-line-box">
@@ -111,7 +111,18 @@
           </el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="no_use(scope.$index, scope.row)">编辑</el-button>
+              <el-button v-if="scope.row.museum_id" size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
+              <el-button
+                v-if="scope.row.exhibition_id"
+                size="mini"
+                @click="toExhibition(scope.row)"
+              >查看展览</el-button>
+              <el-button
+                v-if="scope.row.collection_id"
+                size="mini"
+                @click="toCollection(scope.row)"
+              >查看藏品</el-button>
+              <el-button size="mini" @click="toUser(scope.row)">查看用户</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -154,6 +165,7 @@ export default {
         exhibition_id: "",
         user_name: "",
         is_illegal: "",
+        user_id: "",
         page: 1,
         ppn: 15
       }
@@ -271,6 +283,38 @@ export default {
       vm.search_form.page = page;
       vm.get_explain();
     },
+    toMuseum(row) {
+      this.$router.push({
+        path: "/index/museum",
+        query: {
+          museum_id: row.museum_id
+        }
+      });
+    },
+    toExhibition(row) {
+      this.$router.push({
+        path: "/index/exhibition",
+        query: {
+          exhibition_id: row.exhibition_id
+        }
+      });
+    },
+    toCollection(row) {
+      this.$router.push({
+        path: "/index/collection",
+        query: {
+          collection_id: row.colleciton_id
+        }
+      });
+    },
+    toUser(row) {
+      this.$router.push({
+        path: "/index/user",
+        query: {
+          user_id: row.user_id
+        }
+      });
+    },
     no_use() {}
   },
 
@@ -281,6 +325,18 @@ export default {
       vm.have_param = true;
       vm.search_form.museum_id = vm.$route.query.museum_id;
     }
+    if (vm.$route.query.exhibition_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.exhibition_id = vm.$route.query.exhibition_id;
+    }
+    if (vm.$route.query.collection_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.collection_id = vm.$route.query.collection_id;
+    }
+    if (vm.$route.query.user_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.user_id = vm.$route.query.user_id;
+    }
     vm.get_museum();
     vm.get_explain();
     vm.get_explain_num();
@@ -289,16 +345,13 @@ export default {
 </script>
 
 <style >
-.comment-component .form-line.box {
+.explain-component .form-line-box {
   height: 100px;
+  padding-top: 10px;
+  text-align: center;
 }
 
-.form-line.box .el-form-item {
+.explain-component .form-line-box .el-form-item {
   padding: 10px;
-}
-
-.comment-component .el-page-header__title {
-  font-size: 20px;
-  line-height: 40px;
 }
 </style>

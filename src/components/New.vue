@@ -3,14 +3,21 @@
     <el-header>
       <div class="form-line-box">
         <el-form :inline="true" :model="search_form">
+          <el-form-item v-if="have_param">
+            <el-button @click="goBack">返回上一页</el-button>
+          </el-form-item>
           <el-form-item label="标题">
             <el-input v-model="search_form.title" placeholder="标题"></el-input>
           </el-form-item>
           <el-form-item label="博物馆">
-            <el-select v-model="search_form.museum_id" placeholder="博物馆">
+            <el-select v-model="search_form.museum_id">
               <el-option label="全部" value></el-option>
-              <el-option label="故宫博物馆" value="1"></el-option>
-              <el-option label="谢奇博物馆" value="2"></el-option>
+              <el-option
+                v-for="museum in museum_list"
+                :key="museum.id"
+                :label="museum.name"
+                :value="museum.id"
+              ></el-option>
             </el-select>
           </el-form-item>
           <el-form-item label="新闻类型">
@@ -64,8 +71,7 @@
         <el-table-column prop="museum_name" label="相关博物馆" width="150" sortable></el-table-column>
         <el-table-column label="操作">
           <template slot-scope="scope">
-            <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            <el-button size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -92,6 +98,7 @@
 export default {
   data() {
     return {
+      have_param: false,
       table_loading: false,
       search_form: {
         page: 1,
@@ -101,6 +108,7 @@ export default {
         title: "",
         tag: ""
       },
+      museum_list: [],
       new_list: [],
       new_num: 0
     };
@@ -108,7 +116,29 @@ export default {
   computed: {},
   methods: {
     get_museum() {
-      //请求博物馆列表
+      let vm = this;
+      vm.$http
+        .get("/api/web/get_museum")
+        .then(res => {
+          if (res.data.status == 1) {
+            vm.museum_list = res.data.data.museum_list;
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+          } else {
+            vm.$message({
+              message: res.data.error_des
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          vm.$message({
+            message: "请求失败，请重试",
+            center: true
+          });
+        });
     },
     get_new() {
       let vm = this;
@@ -164,12 +194,36 @@ export default {
       let vm = this;
       vm.search_form.page = page;
       vm.get_new();
+    },
+    toMuseum(row) {
+      let vm = this;
+      if (row.museum_id != null) {
+        vm.$router.push({
+          path: "/index/museum",
+          query: {
+            museum_id: row.museum_id
+          }
+        });
+      } else {
+        vm.$message({
+          message: "没有相关联的博物馆",
+          center: true
+        });
+      }
+    },
+    goBack() {
+      this.$router.back();
     }
   },
 
   //生命周期函数
   created() {
     var vm = this;
+    if (vm.$route.query.museum_id) {
+      vm.search_form.museum_id = vm.$route.query.museum_id;
+      vm.have_param = true;
+    }
+    vm.get_museum();
     vm.get_new();
     vm.get_new_num();
   }

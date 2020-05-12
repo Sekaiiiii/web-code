@@ -81,7 +81,8 @@
 
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="no_use(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" @click="toComment(scope.row)">查看用户所有评论</el-button>
+              <el-button size="mini" @click="toExplain(scope.row)">查看用户所有讲解</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -176,7 +177,6 @@ export default {
       vm.$http
         .get(baseurl)
         .then(res => {
-          
           if (res.data.status == 1) {
             vm.user_num = res.data.data.user_num;
             vm.$message({
@@ -215,15 +215,31 @@ export default {
       vm.search_form.page = page;
       vm.get_user();
     },
+    toExplain(row) {
+      this.$router.push({
+        path: "/index/explain",
+        query: {
+          user_id: row.id
+        }
+      });
+    },
+    toComment(row) {
+      this.$router.push({
+        path: "/index/comment",
+        query: {
+          user_id: row.id
+        }
+      });
+    },
     no_use() {}
   },
 
   //生命周期函数
   created() {
     var vm = this;
-    if (vm.$route.query.museum_id != undefined) {
+    if (vm.$route.query.user_id != undefined) {
       vm.have_param = true;
-      vm.search_form.museum_id = vm.$route.query.museum_id;
+      vm.search_form.user_id = vm.$route.query.user_id;
     }
     vm.search();
   }
@@ -231,6 +247,9 @@ export default {
 </script>
 
 <style >
+.user-component .form-line-box {
+  text-align: center;
+}
 .user-component .form-line-box .el-form-item {
   text-align: center;
   padding-top: 20px;

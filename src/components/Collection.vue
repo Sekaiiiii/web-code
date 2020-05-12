@@ -58,7 +58,7 @@
           <el-table-column label="所属博物馆" width="250" prop="museum_name" :sortable="true"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="no_use(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -216,6 +216,14 @@ export default {
       let vm = this;
       vm.get_collection();
       vm.get_colleciton_num();
+    },
+    toMuseum(row) {
+      this.$router.push({
+        path: "/index/museum",
+        query: {
+          museum_id: row.museum_id
+        }
+      });
     },
     no_use() {}
   },

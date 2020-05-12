@@ -48,8 +48,8 @@
           </el-table-column>
 
           <el-table-column label="评论ID" prop="id" width="120" :sortable="true"></el-table-column>
-          <el-table-column label="评论时间" prop="time" :sortable="true"></el-table-column>
-          <el-table-column label="评论内容" prop="content" :sortable="true"></el-table-column>
+          <el-table-column label="评论时间" prop="time" width="180" :sortable="true"></el-table-column>
+          <el-table-column label="评论内容" prop="content" width="180" :sortable="true"></el-table-column>
           <el-table-column label="展览评分" width="150" prop="exhibition_score" :sortable="true">
             <template slot-scope="scope">
               <el-rate v-model="scope.row.exhibition_score" disabled text-color="#ff9900"></el-rate>
@@ -65,10 +65,11 @@
               <el-rate v-model="scope.row.service_score" disabled text-color="#ff9900"></el-rate>
             </template>
           </el-table-column>
-          <el-table-column label="评论用户" prop="name" :sortable="true"></el-table-column>
-          <el-table-column label="操作" width="150">
+          <el-table-column label="评论用户" prop="name" width="150" :sortable="true"></el-table-column>
+          <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="no_use(scope.$index, scope.row)">编辑</el-button>
+              <el-button size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
+              <el-button size="mini" @click="toUser(scope.row)">查看用户</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -108,6 +109,7 @@ export default {
       search_form: {
         museum_id: "",
         user_name: "",
+        user_id: "",
         page: 1,
         ppn: 15
       }
@@ -221,6 +223,22 @@ export default {
       vm.search_form.page = page;
       vm.get_comment();
     },
+    toMuseum(row) {
+      this.$router.push({
+        path: "/index/museum",
+        query: {
+          museum_id: row.museum_id
+        }
+      });
+    },
+    toUser(row) {
+      this.$router.push({
+        path: "/index/user",
+        query: {
+          user_id: row.user_id
+        }
+      });
+    },
     no_use() {}
   },
 
@@ -230,6 +248,10 @@ export default {
     if (vm.$route.query.museum_id != undefined) {
       vm.have_param = true;
       vm.search_form.museum_id = vm.$route.query.museum_id;
+    }
+    if (vm.$route.query.user_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.user_id = vm.$route.query.user_id;
     }
     vm.get_museum();
     vm.get_comment();

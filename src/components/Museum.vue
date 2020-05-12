@@ -3,6 +3,9 @@
     <el-header>
       <div class="form-line-box">
         <el-form :inline="true" :model="search_form">
+          <el-form-item v-if="have_param">
+            <el-button @click="goBack">返回上一页</el-button>
+          </el-form-item>
           <el-form-item label="标题">
             <el-input v-model="search_form.name" placeholder="博物馆名字"></el-input>
           </el-form-item>
@@ -99,12 +102,12 @@
 
         <el-table-column label="操作" width="600">
           <template slot-scope="scope">
-            <el-button size="mini" @click="no_use(scope.$index, scope.row)">编辑</el-button>
-            <el-button size="mini" @click="no_use(scope.$index, scope.row)">查看展览</el-button>
-            <el-button size="mini" @click="no_use(scope.$index, scope.row)">查看教育活动</el-button>
-            <el-button size="mini" @click="no_use(scope.$index, scope.row)">查看藏品</el-button>
-            <el-button size="mini" @click="getComment(scope.row)">查看评论</el-button>
-            <el-button size="mini" @click="no_use(scope.$index, scope.row)">查看讲解</el-button>
+            <el-button size="mini" @click="toExhibition(scope.row)">查看展览</el-button>
+            <el-button size="mini" @click="toEducationActivity( scope.row)">查看教育活动</el-button>
+            <el-button size="mini" @click="toCollection(scope.row)">查看藏品</el-button>
+            <el-button size="mini" @click="toComment(scope.row)">查看评论</el-button>
+            <el-button size="mini" @click="toExplain(scope.row)">查看讲解</el-button>
+            <el-button size="mini" @click="toNew(scope.row)">查看新闻</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -118,9 +121,11 @@
 export default {
   data() {
     return {
+      have_param:false,
       table_loading: false,
       search_form: {
         name: "",
+        museum_id: "",
         page: "",
         ppn: ""
       },
@@ -165,12 +170,50 @@ export default {
           vm.table_loading = false;
         });
     },
-    getComment(row) {
+    toComment(row) {
       let vm = this;
       vm.$router.push({
         path: "/index/comment",
         query: { museum_id: row.id }
       });
+    },
+    toEducationActivity(row) {
+      let vm = this;
+      vm.$router.push({
+        path: "/index/education_activity",
+        query: { museum_id: row.id }
+      });
+    },
+    toExhibition(row) {
+      let vm = this;
+      vm.$router.push({
+        path: "/index/exhibition",
+        query: { museum_id: row.id }
+      });
+    },
+    toCollection(row) {
+      let vm = this;
+      vm.$router.push({
+        path: "/index/collection",
+        query: { museum_id: row.id }
+      });
+    },
+    toNew(row) {
+      let vm = this;
+      vm.$router.push({
+        path: "/index/new",
+        query: { museum_id: row.id }
+      });
+    },
+    toExplain(row) {
+      let vm = this;
+      vm.$router.push({
+        path: "/index/explain",
+        query: { museum_id: row.id }
+      });
+    },
+    goBack() {
+      this.$router.back();
     },
     no_use() {}
   },
@@ -178,6 +221,10 @@ export default {
   //生命周期函数
   created() {
     var vm = this;
+    if (vm.$route.query.museum_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.museum_id = vm.$route.query.museum_id;
+    }
     vm.get_museum();
   }
 };
