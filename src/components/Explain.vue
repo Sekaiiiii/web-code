@@ -10,6 +10,14 @@
             <el-form-item label="用户名">
               <el-input v-model="search_form.user_name"></el-input>
             </el-form-item>
+            <el-form-item label="审核情况">
+              <el-select v-model="search_form.is_illegal">
+                <el-option label="全部" value></el-option>
+                <el-option label="审核通过" value="0"></el-option>
+                <el-option label="未审核" value="1"></el-option>
+                <el-option label="审核不通过" value="2"></el-option>
+              </el-select>
+            </el-form-item>
             <el-form-item label="博物馆">
               <el-select v-model="search_form.museum_id">
                 <el-option label="全部" value></el-option>
@@ -123,6 +131,7 @@
                 @click="toCollection(scope.row)"
               >查看藏品</el-button>
               <el-button size="mini" @click="toUser(scope.row)">查看用户</el-button>
+              <el-button size="mini" @click="wantDeleteExplain(scope.row)">删除讲解</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -144,6 +153,17 @@
         </div>
       </el-footer>
     </el-container>
+    <el-dialog
+      title="提示"
+      :visible.sync="deleteExplainConfirmDialogShow"
+      width="20%"
+    >
+      <span>确定要删除ID为{{delete_explain_form.id}}的讲解吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteExplainConfirmDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="deleteExplain" :loading="deleteExplainLoading">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -152,12 +172,20 @@ export default {
   data() {
     return {
       have_param: false,
+
+      deleteExplainConfirmDialogShow: false,
+
+      deleteExplainLoading: false,
       table_loading: false,
 
       museum_list: [],
 
       explain_num: 0,
       explain_list: [],
+
+      delete_explain_form: {
+        id: ""
+      },
 
       search_form: {
         museum_id: "",
@@ -303,7 +331,7 @@ export default {
       this.$router.push({
         path: "/index/collection",
         query: {
-          collection_id: row.colleciton_id
+          collection_id: row.collection_id
         }
       });
     },
@@ -314,6 +342,48 @@ export default {
           user_id: row.user_id
         }
       });
+    },
+    wantDeleteExplain(row) {
+      let vm = this;
+      vm.deleteExplainConfirmDialogShow = true;
+      vm.delete_explain_form.id = row.id;
+    },
+    deleteExplain() {
+      let vm = this;
+      vm.deleteExplainLoading = true;
+      vm.$http({
+        url: "/api/web/del_explain",
+        method: "post",
+        data: {
+          id: vm.delete_explain_form.id
+        }
+      })
+        .then(res => {
+          vm.deleteExplainLoading = false;
+          if (res.data.status == 1) {
+            vm.deleteExplainConfirmDialogShow = false;
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            //刷新页面
+            vm.get_explain();
+            vm.get_explain_num();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          vm.deleteExplainLoading = false;
+          console.error(err);
+          vm.message({
+            message: "请求失败,请重试",
+            center: true
+          });
+        });
     },
     no_use() {}
   },
@@ -353,5 +423,9 @@ export default {
 
 .explain-component .form-line-box .el-form-item {
   padding: 10px;
+}
+
+.explain-component .page-box {
+  text-align: center;
 }
 </style>

@@ -12,6 +12,7 @@
           <el-form-item label="博物馆">
             <el-select v-model="search_form.museum_id">
               <el-option label="全部" value></el-option>
+              <el-option label="无相关" value="null"></el-option>
               <el-option
                 v-for="museum in museum_list"
                 :key="museum.id"

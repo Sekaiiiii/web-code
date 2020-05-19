@@ -305,7 +305,7 @@ export default {
       this.$router.push({
         path: "/index/collection",
         query: {
-          collection_id: row.colleciton_id
+          collection_id: row.collection_id
         }
       });
     },
@@ -318,10 +318,70 @@ export default {
       });
     },
     explainPass(row) {
-      console.log(row);
+      let vm = this;
+      vm.$http({
+        url: "/api/web/set_explain",
+        method: "post",
+        data: {
+          is_illegal: "0",
+          id: row.id
+        }
+      })
+        .then(res => {
+          if (res.data.status == 1) {
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.get_explain();
+            vm.get_explain_num();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          vm.$message({
+            message: "请求失败,请重试",
+            center: true
+          });
+        });
     },
     explainNoPass(row) {
-      console.log(row);
+      let vm = this;
+      vm.$http({
+        url: "/api/web/set_explain",
+        method: "post",
+        data: {
+          is_illegal: "2",
+          id: row.id
+        }
+      })
+        .then(res => {
+          if (res.data.status == 1) {
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.get_explain();
+            vm.get_explain_num();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          vm.$message({
+            message: "请求失败,请重试",
+            center: true
+          });
+        });
     },
     no_use() {}
   },

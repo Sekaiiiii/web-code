@@ -58,6 +58,7 @@
           <el-table-column label="所属博物馆" width="250" prop="museum_name" :sortable="true"></el-table-column>
           <el-table-column label="操作">
             <template slot-scope="scope">
+              <el-button size="mini" @click="toImageDialog(scope.row)">查看图片</el-button>
               <el-button size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
             </template>
           </el-table-column>
@@ -80,6 +81,32 @@
         </div>
       </el-footer>
     </el-container>
+    <el-dialog title="图片" :visible.sync="imageDialogShow" @close="closeImageDialog">
+      <template>
+        <el-carousel type="card" height="400px" @change="switchImage">
+          <el-carousel-item v-for="image in image_dialog.image_list" :key="image.index">
+            <el-image fit="contain" :src="image"></el-image>
+          </el-carousel-item>
+          <el-carousel-item>
+            <el-upload
+              class="avatar-uploader"
+              name="image_list"
+              action="/api/web/upload_image"
+              :multiple="true"
+              :data="{education_activity_id:image_dialog.education_activity_id}"
+              :on-success="uploadFileSuccess"
+              :on-error="uploadFileError"
+            >
+              <i class="el-icon-plus avatar-uploader-icon"></i>
+            </el-upload>
+          </el-carousel-item>
+        </el-carousel>
+      </template>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="warning" @click="deleteImage" :loading="deleteImageLoading">删除</el-button>
+        <el-button @click="imageDialogShow = false">返 回</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -88,12 +115,25 @@ export default {
   data() {
     return {
       have_param: false,
+
+      imageDialogShow: false,
+
+      deleteImageLoading: false,
       table_loading: false,
 
       museum_list: [],
 
       education_activity_num: 0,
       education_activity_list: [],
+
+      image_dialog: {
+        index: "",
+        upload: false,
+        delete: false,
+        education_activity_id: "",
+        image_list: [],
+        file_list: []
+      },
 
       search_form: {
         museum_id: "",
@@ -217,13 +257,109 @@ export default {
       vm.get_education_activity();
       vm.get_education_activity_num();
     },
-    toMuseum(row){
+    toMuseum(row) {
       this.$router.push({
-        path:"/index/museum",
-        query:{
-          museum_id:row.museum_id
+        path: "/index/museum",
+        query: {
+          museum_id: row.museum_id
+        }
+      });
+    },
+    toImageDialog(row) {
+      let vm = this;
+      vm.image_dialog.index = 0;
+      vm.image_dialog.image_list = [];
+      vm.image_dialog.file_list = [];
+      vm.image_dialog.delete = false;
+      vm.image_dialog.upload = false;
+      row.image_list.forEach(file => {
+        vm.image_dialog.image_list.push(`http://192.144.239.176:8080/${file}`);
+        vm.image_dialog.file_list.push(file);
+      });
+      vm.image_dialog.education_activity_id = row.id;
+      vm.imageDialogShow = true;
+    },
+    switchImage(index) {
+      let vm = this;
+      vm.image_dialog.index = index;
+    },
+    uploadFileSuccess(res) {
+      let vm = this;
+      if (res.status == 1) {
+        //上传文件成功了
+        vm.image_dialog.upload = true;
+        vm.imageDialogShow = false;
+        vm.$message({
+          message: res.data.msg,
+          center: true
+        });
+      } else {
+        //上传文件失败了
+        vm.$message({
+          message: res.error_des,
+          center: true
+        });
+      }
+    },
+    uploadFileError(err) {
+      let vm = this;
+      console.error(err);
+      vm.$message({
+        message: "请求失败，请重试",
+        center: true
+      });
+    },
+    deleteImage() {
+      let vm = this;
+      //检查index
+      if (vm.image_dialog.index >= vm.image_dialog.file_list.length) {
+        return vm.$message({
+          message: "请选择图片",
+          center: true
+        });
+      }
+
+      vm.deleteImageLoading = true;
+      vm.$http({
+        url: "/api/web/del_image",
+        method: "post",
+        data: {
+          file: vm.image_dialog.file_list[vm.image_dialog.index]
         }
       })
+        .then(res => {
+          console.log(res);
+          vm.deleteImageLoading = false;
+          if (res.data.status == 1) {
+            vm.image_dialog.delete = true;
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.image_dialog.image_list.splice(vm.image_dialog.index, 1);
+            vm.image_dialog.file_list.splice(vm.image_dialog.index, 1);
+            vm.image_dialog.index = 0;
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          vm.deleteImageLoading = false;
+          console.error(err);
+          vm.message({
+            message: "请求失败,请重试",
+            center: true
+          });
+        });
+    },
+    closeImageDialog() {
+      let vm = this;
+      if (vm.image_dialog.upload || vm.image_dialog.delete) {
+        vm.get_education_activity();
+      }
     },
     no_use() {}
   },
@@ -251,5 +387,30 @@ export default {
 }
 .education-activity-component .page-box {
   text-align: center;
+}
+
+.education-activity-component .avatar-uploader .el-upload {
+  border: 1px dashed #d9d9d9;
+  border-radius: 6px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+  background-color: gray;
+}
+.education-activity-component .avatar-uploader .el-upload:hover {
+  border-color: #409eff;
+}
+.education-activity-component .avatar-uploader-icon {
+  font-size: 50px;
+  color: black;
+  width: 400px;
+  height: 400px;
+  line-height: 400px;
+  text-align: center;
+}
+.education-activity-component .avatar {
+  width: 400px;
+  height: 400px;
+  display: block;
 }
 </style>

@@ -70,6 +70,7 @@
             <template slot-scope="scope">
               <el-button size="mini" @click="toMuseum(scope.row)">查看博物馆</el-button>
               <el-button size="mini" @click="toUser(scope.row)">查看用户</el-button>
+              <el-button size="mini" @click="wantDeleteComment(scope.row)">删除评论</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -91,6 +92,13 @@
         </div>
       </el-footer>
     </el-container>
+    <el-dialog title="提示" :visible.sync="deleteCommentConfirmDialogShow" width="20%">
+      <span>确定要删除ID为{{delete_comment_form.id}}的评论吗？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="deleteCommentConfirmDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="deleteComment" :loading="deleteCommentLoading">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -99,12 +107,20 @@ export default {
   data() {
     return {
       have_param: false,
+
+      deleteCommentConfirmDialogShow: false,
+
       table_loading: false,
+      deleteCommentLoading: false,
 
       museum_list: [],
 
       comment_num: 0,
       comment_list: [],
+
+      delete_comment_form: {
+        id: ""
+      },
 
       search_form: {
         museum_id: "",
@@ -154,7 +170,6 @@ export default {
       vm.$http
         .get(baseurl)
         .then(res => {
-          console.log(res);
           if (res.data.status == 1) {
             vm.comment_list = res.data.data.comment_list;
             vm.$message({
@@ -238,6 +253,47 @@ export default {
           user_id: row.user_id
         }
       });
+    },
+    wantDeleteComment(row) {
+      let vm = this;
+      vm.deleteCommentConfirmDialogShow = true;
+      vm.delete_comment_form.id = row.id;
+    },
+    deleteComment() {
+      let vm = this;
+      vm.deleteCommentLoading = true;
+      vm.$http({
+        url: "/api/web/del_comment",
+        method: "post",
+        data: {
+          id: vm.delete_comment_form.id
+        }
+      })
+        .then(res => {
+          vm.deleteCommentLoading = false;
+          if (res.data.status == 1) {
+            vm.deleteCommentConfirmDialogShow = false;
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.get_comment();
+            vm.get_comment_num();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          vm.deleteCommentLoading = false;
+          console.error(err);
+          vm.message({
+            message: "请求失败,请重试",
+            center: true
+          });
+        });
     },
     no_use() {}
   },
