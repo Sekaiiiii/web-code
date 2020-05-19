@@ -81,8 +81,10 @@
 
           <el-table-column label="操作">
             <template slot-scope="scope">
-              <el-button size="mini" @click="toComment(scope.row)">查看用户所有评论</el-button>
-              <el-button size="mini" @click="toExplain(scope.row)">查看用户所有讲解</el-button>
+              <el-button size="mini" @click="toComment(scope.row)">查看评论</el-button>
+              <el-button size="mini" @click="toExplain(scope.row)">查看讲解</el-button>
+              <el-button size="mini" @click="wantSetPermission(scope.row)">设置权限</el-button>
+              <el-button size="mini" @click="wantSetPassword(scope.row)">重置密码</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -104,6 +106,43 @@
         </div>
       </el-footer>
     </el-container>
+
+    <el-dialog title="重设密码" :visible.sync="setPasswordDialogShow">
+      <el-form :model="set_password_form">
+        <el-form-item label="新密码" :label-width="formLabelWidth">
+          <el-input v-model="set_password_form.password1" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" :label-width="formLabelWidth">
+          <el-input v-model="set_password_form.password2" autocomplete="off"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setPasswordDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="setUserPassword" :loading="setUserPasswordLoading">确 定</el-button>
+      </div>
+    </el-dialog>
+    <el-dialog title="设置权限" :visible.sync="setPermissionDialogShow">
+      <el-form :model="set_permission_form">
+        <el-form-item label="禁止评论" :label-width="formLabelWidth">
+          <el-switch
+            v-model="set_permission_form.no_comment"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
+        </el-form-item>
+        <el-form-item label="禁止上传讲解" :label-width="formLabelWidth">
+          <el-switch
+            v-model="set_permission_form.no_upload_explain"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="setPermissionDialogShow = false">取 消</el-button>
+        <el-button type="primary" @click="setUserPermission" :loading="setUserPermissionLoading">确 定</el-button>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -112,10 +151,29 @@ export default {
   data() {
     return {
       have_param: false,
+
+      setPermissionDialogShow: false,
+      setPasswordDialogShow: false,
+
       table_loading: false,
+     
+      setUserPermissionLoading: false,
+      setUserPasswordLoading: false,
 
       user_num: 0,
       user_list: [],
+
+      set_permission_form: {
+        no_comment: "",
+        no_upload_explain: "",
+        user_id: ""
+      },
+
+      set_password_form: {
+        password1: "",
+        password2: "",
+        user_id: ""
+      },
 
       search_form: {
         user_name: "",
@@ -125,7 +183,9 @@ export default {
         user_id: "",
         page: 1,
         ppn: 15
-      }
+      },
+
+      formLabelWidth: "120px"
     };
   },
   computed: {},
@@ -142,7 +202,6 @@ export default {
       vm.$http
         .get(baseurl)
         .then(res => {
-          console.log(res);
           if (res.data.status == 1) {
             vm.user_list = res.data.data.user_list;
             vm.$message({
@@ -230,6 +289,107 @@ export default {
           user_id: row.id
         }
       });
+    },
+    wantSetPermission(row) {
+      let vm = this;
+      vm.set_permission_form.user_id = row.id;
+      vm.set_permission_form.no_comment = row.no_comment ? true : false;
+      vm.set_permission_form.no_upload_explain = row.no_upload_explain
+        ? true
+        : false;
+      vm.setPermissionDialogShow = true;
+    },
+    wantSetPassword(row) {
+      let vm = this;
+      vm.set_password_form.user_id = row.id;
+      vm.set_password_form.password1 = "";
+      vm.set_password_form.password2 = "";
+      vm.setPasswordDialogShow = true;
+    },
+    setUserPermission() {
+      let vm = this;
+      vm.setUserPermissionLoading = true;
+      let param = {};
+      if (vm.set_permission_form.no_comment) {
+        param.no_comment = "1";
+      } else {
+        param.no_comment = "0";
+      }
+      if (vm.set_permission_form.no_upload_explain) {
+        param.no_upload_explain = "1";
+      } else {
+        param.no_upload_explain = "0";
+      }
+      param.user_id = vm.set_permission_form.user_id;
+      vm.$http({
+        url: "/api/web/set_user_permission",
+        method: "post",
+        data: param
+      })
+        .then(res => {
+          vm.setUserPermissionLoading = false;
+          if (res.data.status == 1) {
+            vm.setPermissionDialogShow = false;
+            vm.$message({
+              message: "修改权限成功",
+              center: true
+            });
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          vm.setUserPermissionLoading = false;
+          console.error(err);
+          vm.$message({
+            message: "请求失败，请重试",
+            center: true
+          });
+        });
+    },
+    setUserPassword() {
+      let vm = this;
+      if (vm.set_password_form.password1 != vm.set_password_form.password2) {
+        return vm.$message({
+          message: "输入的密码不相同",
+          center: true
+        });
+      }
+      vm.setUserPasswordLoading = true;
+      vm.$http({
+        url: "/api/web/set_user_password",
+        method: "post",
+        data: {
+          user_id: vm.set_password_form.user_id,
+          password: vm.set_password_form.password2
+        }
+      })
+        .then(res => {
+          vm.setUserPasswordLoading = false;
+          if (res.data.status == 1) {
+            vm.setPasswordDialogShow = false;
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
+        })
+        .catch(err => {
+          vm.setUserPasswordLoading = false;
+          console.error(err);
+          vm.$message({
+            message: "请求失败，请重试",
+            center: true
+          });
+        });
     },
     no_use() {}
   },

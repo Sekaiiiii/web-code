@@ -3,7 +3,7 @@
     <el-container v-loading="table_loading">
       <el-header>
         <div class="form-line-box">
-          <el-form :inline="true" :model="search_form" size="mini">
+          <el-form :inline="true" size="mini">
             <el-form-item>
               <el-button type="primary" @click="mysql_dump">备份当前数据库</el-button>
             </el-form-item>

@@ -3,12 +3,12 @@
     <el-container>
       <el-header height="80px">
         <div class="header-title">
-          <h>后台管理子系统首页</h>
+          <h1>后台管理子系统首页</h1>
         </div>
       </el-header>
       <el-main>
-        <el-row class="card-row" gutter="40">
-          <el-col span="8">
+        <el-row class="card-row" :gutter="40">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>博物馆信息</span>
@@ -20,7 +20,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>展览信息</span>
@@ -32,7 +32,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>教育活动信息</span>
@@ -48,8 +48,8 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-row class="card-row" gutter="40">
-          <el-col span="8">
+        <el-row class="card-row" :gutter="40">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>藏品信息</span>
@@ -61,7 +61,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>新闻信息</span>
@@ -73,7 +73,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>讲解信息</span>
@@ -86,8 +86,8 @@
             </el-card>
           </el-col>
         </el-row>
-        <el-row class="card-row" gutter="40">
-          <el-col span="8">
+        <el-row class="card-row" :gutter="40">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>评论信息</span>
@@ -99,7 +99,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>用户信息</span>
@@ -111,7 +111,7 @@
               </div>
             </el-card>
           </el-col>
-          <el-col span="8">
+          <el-col :span="8">
             <el-card class="box-card">
               <div slot="header" class="clearfix">
                 <span>管理员信息</span>
@@ -436,6 +436,4 @@ export default {
   padding: 30px;
 }
 
-.main-component .box-card {
-}
 </style>
