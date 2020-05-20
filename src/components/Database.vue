@@ -12,7 +12,7 @@
       </el-header>
       <el-main>
         <el-table :data="dump_list" height="750" border style="width: 100%">
-          <el-table-column label="备份年月日" width="150" >
+          <el-table-column label="备份年月日" width="150">
             <template slot-scope="scope">
               <span>{{scope.row.substr(2,10)}}</span>
             </template>
@@ -75,11 +75,18 @@ export default {
         .get("/api/web/mysql_dump")
         .then(res => {
           vm.table_loading = false;
-          vm.$message({
-            message: res.data.data.msg,
-            center: true
-          });
-          vm.get_dump();
+          if (res.data.status == 1) {
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.get_dump();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
         })
         .catch(err => {
           console.error(err);
@@ -98,10 +105,18 @@ export default {
         })
         .then(res => {
           vm.table_loading = false;
-          vm.$message({
-            message: res.data.data.msg,
-            center: true
-          });
+          if (res.data.status == 1) {
+            vm.$message({
+              message: res.data.data.msg,
+              center: true
+            });
+            vm.get_dump();
+          } else {
+            vm.$message({
+              message: res.data.error_des,
+              center: true
+            });
+          }
         })
         .catch(err => {
           console.error(err);
