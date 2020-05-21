@@ -380,6 +380,10 @@ export default {
       vm.have_param = true;
       vm.search_form.museum_id = vm.$route.query.museum_id;
     }
+    if (vm.$route.query.exhibition_id != undefined) {
+      vm.have_param = true;
+      vm.search_form.exhibition_id = vm.$route.query.exhibition_id;
+    }
     vm.get_museum();
     vm.get_exhibtion();
     vm.get_exhibition_num();

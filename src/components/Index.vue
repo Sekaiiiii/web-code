@@ -2,7 +2,27 @@
   <div class="index-component">
     <el-container>
       <el-header height="50px">
-        <!-- 这里面放标题 用户按钮 -->
+        <el-row class="header-line" type="flex" justify="end">
+          <el-col class="header-line-col" :span="5">
+            <div class="header-line-div">
+              <i class="el-icon-eleme"></i>
+              <span>{{user_info.mail_address}}</span>
+            </div>
+            <div class="header-line-div">
+              <i class="el-icon-s-custom"></i>
+              <template v-if="user_info.root_permission == '1'">
+                <span>超级管理员</span>
+              </template>
+              <template v-if="user_info.root_permission == '0'">
+                <span>一般管理员</span>
+              </template>
+            </div>
+            <div class="header-line-div">
+              <i class="el-icon-user-solid"></i>
+              <span>{{user_info.name}}</span>
+            </div>
+          </el-col>
+        </el-row>
       </el-header>
       <el-container>
         <el-aside>
@@ -71,7 +91,15 @@
 export default {
   data() {
     return {
-      fullscreenLoading: false
+      fullscreenLoading: false,
+
+      user_info: {
+        user_id: "",
+        name: "",
+        mail_address: "",
+        root_permission: "",
+        admin_permission: ""
+      }
     };
   },
   methods: {
@@ -92,6 +120,7 @@ export default {
               message: res.data.data.msg,
               center: true
             });
+            vm.$store.commit("setLoginStatu", false);
             //跳转至登录页面
             vm.$router.replace({
               path: "/login"
@@ -119,10 +148,6 @@ export default {
     var vm = this;
     //检查登录状态
     if (!vm.$store.state.is_login) {
-      vm.$message({
-        message: "用户未登录,请先登录",
-        center: true
-      });
       vm.$router.replace({
         path: "/login"
       });
@@ -130,7 +155,15 @@ export default {
       document.title = "博物馆后台管理系统";
     }
   },
-  created() {},
+  created() {
+    let vm = this;
+    console.log(vm.user_info);
+    vm.user_info.user_id = vm.$store.state.user_info.user_id;
+    vm.user_info.name = vm.$store.state.user_info.name;
+    vm.user_info.mail_address = vm.$store.state.user_info.mail_address;
+    vm.user_info.root_permission = vm.$store.state.user_info.root_permission;
+    vm.user_info.admin_permission = vm.$store.state.user_info.admin_permission;
+  },
   mounted() {}
 };
 </script>
@@ -146,6 +179,7 @@ export default {
 }
 .el-header {
   background-color: gray;
+  padding: 0px;
 }
 .el-aside {
   background-color: gray;
@@ -162,5 +196,22 @@ export default {
   width: 100%;
   height: 100%;
   border: 0px;
+}
+.header-line {
+  height: 100%;
+}
+
+.header-line-col {
+  color: blanchedalmond;
+  text-align: end;
+
+  line-height: 50px;
+  overflow: hidden; /*防止内容超出容器或者产生自动换行*/
+  font-size: 15px;
+}
+
+.header-line-div {
+  display: inline;
+  margin-right: 30px;
 }
 </style>

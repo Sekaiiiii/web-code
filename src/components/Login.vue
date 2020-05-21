@@ -70,6 +70,7 @@ export default {
           if (res.data.status == 1) {
             //设置登录状态
             vm.$store.commit("setLoginStatu", true);
+            vm.$store.commit("setUserInfo", res.data.data);
             vm.$message({
               message: res.data.data.msg,
               center: true
@@ -86,7 +87,7 @@ export default {
         })
         .catch(function(err) {
           vm.fullscreenLoading = false;
-          console.log(err);
+          console.error(err);
           vm.$message({
             message: "请求失败，请重试",
             center: true
@@ -94,23 +95,34 @@ export default {
         });
     },
     reset() {
-      let vm = this;
       this.form.name = "";
       this.form.password = "";
-      this.$http({
-        url: "/api/web/logout",
-        method: "get"
-      })
-        .then(function() {
-          vm.$message({
-            message: "退出登录成功",
-            center: true
-          });
-        })
-        .catch(function(err) {
-          console.log(err);
-        });
     }
+  },
+  beforeCreate() {
+    var vm = this;
+    document.title = "博物馆后台管理系统登录页面";
+    //检查cookie是否已登录
+    vm.$http({
+      method: "get",
+      url: "/api/web/get_login_state"
+    })
+      .then(res => {
+        if (res.data.data.is_login) {
+          vm.$store.commit("setLoginStatu", true);
+          vm.$store.commit("setUserInfo", res.data.data);
+          vm.$router.replace({
+            path: "/index/main"
+          });
+        }
+      })
+      .catch(err => {
+        console.error(err);
+        vm.message({
+          message: "获取当前登录状态失败",
+          center: true
+        });
+      });
   }
 };
 </script>
@@ -122,7 +134,8 @@ h1 {
 .login-component {
   width: 100%;
   height: 100%;
-  background-image: url("../assets/login-background-image.jpg");
+  background-image: url("../assets/login-background-image2.jpg");
+  background-size: 100%;
 }
 
 .el-icon-user {
@@ -146,7 +159,7 @@ h1 {
   right: 0;
 
   border-radius: 10%;
-  background-image: url("../assets/login-form-background-image.jpg");
+  background-image: url("../assets/login-form-background-image1.jpg");
 }
 
 .el-input {

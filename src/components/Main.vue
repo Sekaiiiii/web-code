@@ -429,7 +429,7 @@ export default {
   font-size: 40px;
   font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
   text-align: center;
-  padding: 20px;
+  padding-top: 20px;
 }
 
 .main-component .card-row {

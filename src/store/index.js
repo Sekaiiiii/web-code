@@ -8,9 +8,14 @@ export default new Vuex.Store({
         //用户登录状态
         is_login: false,
         //用户信息
-        name: "",
-        admin_permission: "",
-        root_permission: "",
+        user_info: {
+            user_id: "",
+            name: "",
+            mail_address: "",
+            admin_permission: "",
+            root_permission: ""
+        },
+
         main_page_cache: {
             museum_num: "",
             collection_num: "",
@@ -27,10 +32,12 @@ export default new Vuex.Store({
         setLoginStatu(state, is_login) {
             state.is_login = is_login
         },
-        setUserInfo(state, name, admin_permission, root_permission) {
-            state.name = name;
-            state.admin_permission = admin_permission;
-            state.root_permission = root_permission;
+        setUserInfo(state, user_info) {
+            state.user_info.user_id = user_info.user_id;
+            state.user_info.name = user_info.name;
+            state.user_info.mail_address = user_info.mail_address;
+            state.user_info.admin_permission = user_info.admin_permission;
+            state.user_info.root_permission = user_info.root_permission;
         },
         setMainPageCacheMuseumNum(state, p) {
             state.main_page_cache.museum_num = p;

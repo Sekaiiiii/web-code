@@ -146,7 +146,6 @@
 
 <script>
 export default {
-  inject: ["reload"],
   data() {
     return {
       have_param: false,
