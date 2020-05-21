@@ -35,18 +35,6 @@
           style="width: 100%"
           :default-sort="{prop: 'time', order: 'descending'}"
         >
-          <el-table-column type="expand">
-            <template slot-scope="props">
-              <el-form label-position="left">
-                <div v-if="props.row.content">
-                  <el-form-item label="内容">
-                    <span>{{props.row.content}}</span>
-                  </el-form-item>
-                </div>
-              </el-form>
-            </template>
-          </el-table-column>
-
           <el-table-column label="评论ID" prop="id" width="120" :sortable="true"></el-table-column>
           <el-table-column label="评论时间" prop="time" width="180" :sortable="true"></el-table-column>
           <el-table-column label="评论内容" prop="content" width="180" :sortable="true"></el-table-column>

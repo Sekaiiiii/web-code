@@ -43,6 +43,21 @@
                     <span>{{props.row.content}}</span>
                   </el-form-item>
                 </div>
+                <div v-if="props.row.start_time">
+                  <el-form-item label="开始时间">
+                    <span>{{props.row.start_time}}</span>
+                  </el-form-item>
+                </div>
+                <div v-if="props.row.end_time">
+                  <el-form-item label="结束时间">
+                    <span>{{props.row.end_time}}</span>
+                  </el-form-item>
+                </div>
+                <div v-if="props.row.time">
+                  <el-form-item label="展览时间">
+                    <span>{{props.row.time}}</span>
+                  </el-form-item>
+                </div>
               </el-form>
             </template>
           </el-table-column>

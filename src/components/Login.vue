@@ -108,6 +108,7 @@ export default {
       url: "/api/web/get_login_state"
     })
       .then(res => {
+        console.log(res);
         if (res.data.data.is_login) {
           vm.$store.commit("setLoginStatu", true);
           vm.$store.commit("setUserInfo", res.data.data);

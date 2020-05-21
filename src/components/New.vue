@@ -50,7 +50,7 @@
                 <span>{{props.row.description}}</span>
               </el-form-item>
               <el-form-item label="新闻连接">
-                <span>{{props.row.url}}</span>
+                <el-link  type="primary" :href="props.row.url" target="_blank">{{props.row.url}}</el-link>
               </el-form-item>
               <el-form-item label="内容">
                 <span>{{props.row.content}}</span>
